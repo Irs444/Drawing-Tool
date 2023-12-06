@@ -219,13 +219,15 @@ const Board = () => {
   const textAreaRef = useRef();
   const pressedKeys = usePressedKeys();
 
+  const [currentUser, setCurrentUser] = useState(JSON.parse(sessionStorage.getItem('user')));
+
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     const roughCanvas = rough.canvas(canvas);
    
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    // context.clearStyle = 'white';
+    context.clearRect(0, 0, canvas.width, canvas.height,);
 
     context.save();
     context.translate(panOffset.x, panOffset.y);
@@ -438,11 +440,11 @@ const Board = () => {
   };
    
   function getCanvasAsImage(canvas){
-    return canvas.toDataURL("image/png")
+    return canvas.toDataURL("image/jpg")
   }
 
     async function sendImageToServer(file){
-      file.originalname = 'myfile.png';
+      file.originalname = 'myfile.jpg';
       const fd = new FormData();
       fd.append('myfile', file)
       console.log(file);
@@ -453,12 +455,28 @@ const Board = () => {
 
       console.log(response.status);
 
+      const data = await response.json();
+
       if(!response.ok){
         throw new Error(`HTTP error! status: ${response.status}`);
+      }else{
+
+        const res = await fetch('http://localhost:5000/image/add',{
+          method: 'POST',
+          body: JSON.stringify({ image: data.filename,
+            user : currentUser._id,
+            createdAt: new Date() }),
+          headers: {
+           'Content-Type' : 'application/json'
+          }
+        });
+
+
+
       }
     }
 
-    function base64ToBlob(base64, mimeType='') {
+      function base64ToBlob(base64, mimeType='') {
       // Decode base64 string
       const byteCharacters = atob(base64.split(',')[1]);
   
@@ -478,14 +496,15 @@ const Board = () => {
    const saveImage = () => {
      const canvas = document.getElementById("canvas")
      const base64Image = getCanvasAsImage(canvas);
-     const blob = base64ToBlob(base64Image, "image/png")
+     const blob = base64ToBlob(base64Image, "image/jpg")
      sendImageToServer(blob).catch(console.error)
+    
    }
   return (
     <div >
-        <div className="container  text-center  "  >
-      <div className="row w-50 m-4    " style={{position:"fixed", zIndex: 2 }}>
-        <div className="col-3">
+        <div className="container text-center"   >
+      <div className="row w-50 my-2 p-3 border border-primary rounded-3 bg-primary " style={{position:"fixed", zIndex: 2, color:"white"}}>
+        <div className="col">
         <input
           type="radio"
           id="selection"
@@ -494,7 +513,7 @@ const Board = () => {
         />
         <label htmlFor="selection">Selection</label>
         </div>
-        <div className="col-3 ">
+        <div className="col ">
         <input
           type="radio"
           id="rectangle"
@@ -504,12 +523,12 @@ const Board = () => {
         />
         <label htmlFor="rectangle" >Rectangle</label>
         </div>
-         <div className="col-2">
+         <div className="col">
         <input type="radio" id="line" checked={tool === "line"} onChange={() => setTool("line")} />
         <label htmlFor="line">Line</label>
         </div>
        
-        <div className="col-2">
+        <div className="col">
         <input
           type="radio"
           id="pencil"
@@ -518,7 +537,7 @@ const Board = () => {
         />
         <label htmlFor="pencil">Pencil</label>
         </div>
-        <div className="col-2">
+        <div className="col">
         <input type="radio" id="text" checked={tool === "text"} onChange={() => setTool("text")} />
         <label htmlFor="text">Text</label>
         </div>
@@ -527,7 +546,7 @@ const Board = () => {
       <div style={{ position: "fixed", zIndex: 2, bottom: 0, padding: 10 }}>
         <button onClick={undo} className="btn btn-primary"> Undo</button>
         <button onClick={redo} className="btn btn-primary ms-2">Redo</button>
-        <button onClick={saveImage} className="btn btn-primary ms-2">Save</button>
+        <button type= "submit" onClick={saveImage} className="btn btn-primary ms-2">Save</button>
       </div>
       {action === "writing" ? (
         <textarea
@@ -557,7 +576,7 @@ const Board = () => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        style={{ position: "absolute", zIndex: 1 }}
+        style={{ position: "absolute", zIndex: 1, backgroundColor:"white"}}
       >
         Canvas
       </canvas>

@@ -15,12 +15,12 @@ function App() {
    <Routes>
     
 
-    <Route path='home' element={<Home/>}/>
+    <Route path='/home' element={<Home/>}/>
     <Route path='/' element={<Signup/>}/>
-    <Route path='login' element={<Login/>}/>
+    <Route path='/login' element={<Login/>}/>
     
     
-    <Route path='whiteboard' element={<Board/>}/>
+    <Route path='/whiteboard' element={<Board/>}/>
 
    </Routes>
    </BrowserRouter>

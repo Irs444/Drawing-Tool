@@ -10,7 +10,7 @@ router.post('/add', (req, res) => {
     console.log(req.body);
 
     new Model(req.body).save()
-    .then((result) => {
+    .then((result) => {     
        res.json(result); 
     }).catch((err) => {
         console.error(err);
@@ -64,5 +64,12 @@ router.put('/update/:id', (req, res) => {
     });
 
 });
+router.post("/api/save-image", async(req, res) => {
+    const image = new Image({ data: req.body.image});
+    await image.save();
+    res.sendStatus(200);
+
+})
+
 
 module.exports = router;

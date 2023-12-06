@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import app_config from '../config';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+// import Navbar from './Navbar';
 
 const Login = () => {
 
@@ -37,9 +38,9 @@ const Login = () => {
                     title: "you have succefully login"
                 });
                 // setLoggedIn(true);
-                // const data = await res.json();
-                // sessionStorage.setItem('main', JSON.stringify(data));
-                navigate('/board');
+                const data = await res.json();
+                sessionStorage.setItem('user', JSON.stringify(data));
+                navigate('/home');
 
             }
             else if (res.status === 401) {
@@ -55,6 +56,7 @@ const Login = () => {
     });
     return (
         <div>
+            {/* <Navbar /> */}
             <section className="vh-100 gradient-custom">
                 <div className="container py-5 h-100" >
                     <div className="row d-flex justify-content-center align-items-center h-100">

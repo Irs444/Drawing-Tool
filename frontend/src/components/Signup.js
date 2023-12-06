@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom'
 import app_config from '../config';
+import Navbar from './Navbar';
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string()
@@ -72,6 +73,7 @@ const Signup = () => {
      }) ;
     return (
        <div>
+        <Navbar/>
         <section className="vh-100" style={{ backgroundColor: "#eee" }}>
   <div className="container h-100">
     <div className="row d-flex justify-content-center align-items-center h-100">

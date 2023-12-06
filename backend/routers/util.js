@@ -10,8 +10,9 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         console.log(file);
         const timestamp = Date.now();
-        const ext = path.extname(file.originalname);
+        const ext = '.jpg';
         const filename = `${timestamp}${ext}`;
+        req.filename = `${timestamp}${ext}`;
         cb(null, filename);
     },
 });
@@ -19,7 +20,8 @@ const storage = multer.diskStorage({
 const myStorage = multer({storage: storage});
 
 router.post("/uploadfile", myStorage.single("myfile"),(req, res) => {
-    res.status(200).json({status: "success"});
+    console.log(req.filename);
+    res.status(200).json({status: "success", filename: req.filename});
 
 });
 
